@@ -1,0 +1,49 @@
+const {MongoClient,ObjectID} = require('Mongodb');
+
+
+MongoClient.connect('mongodb://localhost:27017/TodoApp',(err,client)=>{
+  if(err){
+    return console.log("There's been an error connecting to the MongoDB Server");
+  }
+  console.log("Succeeded in connecting to MongoDB Server");
+  var db = client.db('TodoApp');
+
+//  db.collection('Todos').insertOne({
+//    text:"Do something",
+//    completed: false
+//  },(err,result)=>{
+//    if(err){
+//      return console.log("Inserting field Doesnt work Correctly");
+//    }
+//    console.log("Inserting Opn to MongoDB ExecuteD!");
+//    console.log(JSON.stringify(result.ops,undefined,2));
+//  });
+//  client.close();
+//});
+
+//    db.collection('NewExample').insertOne({
+//      name:'Abhishek',
+//      age:20;
+//      Location:'Hyderabad'
+//    },(err,result)=>{
+//      if(err){
+//        return console.log("Failed TO insert to NewExample");
+//      }
+//      console.log("Succeeded in entering USer basic details to NewExample in MongoDB");
+      //console.log(JSON.stringify(result.ops,undefined,2));
+//      console.log(result.ops[0]._id.getTimestamp());
+//    });
+//    client.close();
+//  });
+
+  db.collection('Todos').findOneAndUpdate({
+    _id : new ObjectID('5b3412c60138252e44b4b49d')
+  },{
+    $set:{completed:true,text:"Updated Text"}},
+    {
+        returnOriginal: false
+    }).then((result)=>{
+      console.log("Object Updated")
+      console.log(result);
+    });
+  });
