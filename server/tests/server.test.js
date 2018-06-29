@@ -1,13 +1,16 @@
 const expect = require('expect');
 const request = require('supertest');
-
+const {ObjectID} = require('mongodb');
 var {app} = require('./../server.js');
 const {Todo} = require('./../models/todo.js');
 
 
 const todos = [
-  { text :"first Todo test"},
-  { text :"Second Todo test"}
+  { _id : new ObjectID(),
+    text :"first Todo test"},
+  {
+    _id : new ObjectID(),
+    text :"Second Todo test"}
 ]
 
 beforeEach((done)=>{
@@ -73,4 +76,33 @@ describe(" GET /todos",()=>{
     .end(done);
 
   });
+});
+
+describe("GET /todos/:id",()=>{
+
+    it("Should return doc",(done)=>{
+      request(app)
+      .get(`/todos/${todos[0]._id.toHexString()}`)
+      .expect(200)
+      .expect((res)=>{
+        expect(res.body.todos.text).toBe(todos[0].text);
+      })
+      .end(done);
+    });
+var _id1 = new ObjectID().toHexString();
+    it('Should send 404 for ObjectId not yet occupied',(done)=>{
+
+      request(app)
+      .get(`/todos/${todos[0]._id1}`)
+      .expect(404)
+      .end(done);
+
+    });
+
+    it("should have 400 for non-object Ids",(done)=>{
+      request(app)
+      .get(`/todos/1232`)
+      .expect(404)
+      .end(done);
+    });
 });
