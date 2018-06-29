@@ -23,13 +23,12 @@ todo.save().then((doc)=>{
   });
 
 app.get('/todos',(req,res)=>{
-  Todo.find({}).then((doc)=>{
-    res.send({doc})
+  Todo.find({}).then((todos)=>{
+    res.send({todos})
   },(err)=>{
-    res.status(400).send(e);
-    })
-})
-
+    res.status(400).send(err);
+  });
+});
 
 
 //GET /todos/i... To get the specific todo
