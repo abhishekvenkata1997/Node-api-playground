@@ -84,7 +84,7 @@ app.patch('/todos/:id',(req,res)=>{
     if(!todos){
       return res.status(400).send();
     }
-    return res.send(todos);
+    return res.send({todos});
   }).catch((e)=>{
     res.status(404).send(e);
   })

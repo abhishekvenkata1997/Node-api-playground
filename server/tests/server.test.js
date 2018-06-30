@@ -11,7 +11,10 @@ const todos = [
     text :"first Todo test"},
   {
     _id : new ObjectID(),
-    text :"Second Todo test"}
+    text :"Second Todo test",
+    completed:true,
+    completedAt:333
+  }
 ]
 
 beforeEach((done)=>{
@@ -136,4 +139,47 @@ describe("DELETE todos/:id",()=>{
     .end(done);
   });
 
+});
+
+describe("PATCH todos/:id",()=>{
+  it("Should update the Todo",(done)=>{
+    var id = todos[0]._id.toHexString();
+    request(app)
+    .patch(`/todos/${id}`)
+    .send({text:"Testing For patch",completed:true})
+    .expect(200)
+    .expect((res)=>{
+      expect(typeof res.body.todos.completedAt).toBe('number');
+    })
+    .end(done);
+  });
+
+  it("should send a null completedAt as null if completed is False ",(done)=>{
+    var id = todos[0]._id.toHexString();
+    request(app)
+    .patch(`/todos/${id}`)
+    .send({text:"Testing for patch",completed:false})
+    .expect(200)
+    .expect((res)=>{
+      expect(res.body.todos.completedAt).toBeNull();
+    })
+    .end(done);
+  });
+
+  it("shoulde send error 400 for  ID that doesnt exist ",(done)=>{
+    var id1 = new ObjectID().toHexString();
+    request(app)
+    .patch(`/todos/${id1}`)
+    .send({text:"Hey",completed:true})
+    .expect(400)
+    .end(done);
+  });
+
+  it("Should return 404 if id is INvalid",(done)=>{
+    request(app)
+    .patch('/todos/1244')
+    .send({text:"hey",completed:true})
+    .expect(404)
+    .end(done);
+  });
 });
