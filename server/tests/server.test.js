@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const expect = require('expect');
 const request = require('supertest');
 const {ObjectID} = require('mongodb');
@@ -105,4 +106,34 @@ var _id1 = new ObjectID().toHexString();
       .expect(404)
       .end(done);
     });
+});
+
+
+describe("DELETE todos/:id",()=>{
+  it("should return 200 and must delete the item",(done)=>{
+      request(app)
+      .delete(`/todos/${todos[0]._id.toHexString()}`)
+      .expect(200)
+      .expect((res)=>{
+        expect(res.body.todos.text).toBe(todos[0].text);
+      })
+      .end(done);
+    });
+
+    var id1 = new ObjectID().toHexString();
+  it("should return 400  if todo not found",(done)=>{
+      request(app)
+      .delete(`/todos/${todos[0]._id1}`)
+      .expect(404)
+      .end(done);
+
+  });
+
+  it("Should return 404 if the id Is not even valid",(done)=>{
+    request(app)
+    .delete('/todos/1234')
+    .expect(404)
+    .end(done);
+  });
+
 });
